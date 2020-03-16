@@ -27,7 +27,7 @@ print('\n')
 
 df3 = pandas.read_table('data/4/quakes.csv', sep=',', index_col=0)
 print(f"quakes mean: {df3.depth.mean()}")
-res3=stats.ttest_1samp(df3.depth, 10000)
+res3=stats.ttest_1samp(df3.depth, 300)
 print(f"quakes p-value: {res3.pvalue}")
 if res3.pvalue > alpha:
     print("quakes hypothesis is true")
@@ -36,11 +36,14 @@ else:
 
 fig = plt.figure()
 ax1 = fig.add_subplot(2,2,1)
-sns.distplot(df1.births, color="blue", label="births number")
+sns.distplot(df1.births, color="blue", label="births number", hist_kws={"align": "mid"})
+plt.axvline(10000, color='k', linestyle='dashed', linewidth=1)
 ax2 = fig.add_subplot(2,2,2)
 sns.distplot(df2.manaus, color="blue", label="Manaus height")
+plt.axvline(0, color='k', linestyle='dashed', linewidth=1)
 ax3 = fig.add_subplot(2,2,3)
 sns.distplot(df3.depth, color="blue", label="quakes depth")
+plt.axvline(300, color='k', linestyle='dashed', linewidth=1)
 plt.legend()
 plt.show()
 
