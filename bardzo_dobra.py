@@ -8,16 +8,16 @@ df = pandas.read_table('data/5/footballers.csv', sep=';')
 # retaining only 2 positions and only important information (position and weight)
 df = df.filter(["Weight(pounds)", "Position"]).loc[df["Position"].isin(['Relief_Pitcher', 'Starting_Pitcher'])]
 factorizedPositions = df.Position.factorize()
+factorizedPositionsLabels = factorizedPositions[1]
 df.Position = factorizedPositions[0]
 
 correl = df.corr(method="spearman")
 print(correl)
 
-df1 = df.loc[df['Position'] == 0]
-df2 = df.loc[df['Position'] == 1]
-sns.distplot(df1["Weight(pounds)"], color="blue", label=f"{factorizedPositions[0]}", axlabel=False)
-sns.distplot(df2["Weight(pounds)"], color="red", label=f"{factorizedPositions[1]}", axlabel=False)
-
+for i in range(len(factorizedPositions[1])):
+    partialDataFrame = df.loc[df["Position"] == i]
+    sns.distplot(partialDataFrame["Weight(pounds)"], label=f"{factorizedPositionsLabels[i]}", axlabel=False)
+plt.legend()
 
 plt.figure(figsize=(5, 2))
 plt.scatter(df["Weight(pounds)"], df.Position)
