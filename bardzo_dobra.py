@@ -20,8 +20,8 @@ for i in range(len(factorizedPositions[1])):
     sns.distplot(partialDataFrame["Weight(pounds)"], label=f"{factorizedPositionsLabels[i]}", axlabel=False)
 plt.legend()
 
-plt.figure(figsize=(5, 2))
-plt.scatter(df["Weight(pounds)"], df.Position)
-plt.yticks(np.arange(len(factorizedPositions[1])), factorizedPositions[1])
+# plt.figure(figsize=(5, 2))
+# plt.scatter(df["Weight(pounds)"], df.Position)
+# plt.yticks(np.arange(len(factorizedPositions[1])), factorizedPositions[1])
 
 plt.show()
