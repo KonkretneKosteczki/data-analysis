@@ -1,6 +1,7 @@
 import pandas
 import seaborn as sns
 from matplotlib import pyplot as plt
+from scipy.stats import norm
 
 import numpy as np
 from scipy.stats import spearmanr
@@ -33,7 +34,9 @@ print(correl)
 # sns.pairplot(df, hue="Position") # very similar to the bottom but only displays the approximation
 for i in range(len(factorizedPositions[1])):
     partialDataFrame = df.loc[df["Position"] == i]
-    sns.distplot(partialDataFrame["Weight(pounds)"], label=f"{factorizedPositionsLabels[i]}", axlabel=False)
+    color = sns.color_palette("hls", i+1)[i]
+    sns.distplot(partialDataFrame["Weight(pounds)"], label=f"{factorizedPositionsLabels[i]}", axlabel=False, kde=False,
+                 color=color, fit=norm, fit_kws={"color": color})
 plt.legend()
 
 # plt.figure(figsize=(5, 2))
