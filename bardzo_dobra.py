@@ -14,6 +14,7 @@ df.Position = factorizedPositions[0]
 correl = df.corr(method="spearman")
 print(correl)
 
+# sns.pairplot(df, hue="Position") # very similar to the bottom but only displays the approximation
 for i in range(len(factorizedPositions[1])):
     partialDataFrame = df.loc[df["Position"] == i]
     sns.distplot(partialDataFrame["Weight(pounds)"], label=f"{factorizedPositionsLabels[i]}", axlabel=False)
