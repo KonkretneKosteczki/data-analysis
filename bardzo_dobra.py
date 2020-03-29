@@ -3,7 +3,7 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from scipy.stats import norm
 
-import numpy as np
+
 from scipy.stats import spearmanr
 
 df = pandas.read_table('data/5/footballers.csv', sep=';')
@@ -15,32 +15,29 @@ df = df.filter(["Weight(pounds)", "Position"]).loc[df["Position"].isin(['Relief_
 alpha = 0.05
 
 rho, pval = spearmanr(df["Weight(pounds)"], df["Position"])
-print("statistical significance: ",alpha)
-print("rho(correlation coefficient): ",rho)
-print("pval: ", pval)
-if pval>alpha:
-    print("the results are statistically significant")
+print("Przyjęty poziom istotnośći statystycznej: ", alpha)
+print("Współczynnik korelacji wyznaczony metodą rank spearmana: ", rho)
+print("P-wartość: ", pval)
+
+if rho > 0.3:
+    print("Występuje zależność między badanymi cechami. Współczynnik korelacji jest wysoki.")
 else:
-    print("the results are not statistically significant")
+    print("Brak zależności między badanymi cechami. Współczynnik korelacji jest niski.")
 
-#using pandas
-factorizedPositions = df.Position.factorize()
-factorizedPositionsLabels = factorizedPositions[1]
-df.Position = factorizedPositions[0]
+if pval>alpha:
+    print("Wynik jest mało istotny statystycznie. P-wartość jest wyższa niż przyjęty poziom istotności statystycznej.")
+else:
+    print("Wynik ma dużą istotność statystyczną. P-wartość jest niższa niż przyjęty poziom istotności statystycznej.")
 
-correl = df.corr(method="spearman")
-print(correl)
+partialDataFrame = df.loc[df["Position"] == 'Relief_Pitcher']
+color1 = sns.color_palette("hls", 2)[0]
+sns.distplot(partialDataFrame["Weight(pounds)"], label='Relief_Pitcher', kde=False,
+                 color=color1, fit=norm, fit_kws={"color": color1})
 
-# sns.pairplot(df, hue="Position") # very similar to the bottom but only displays the approximation
-for i in range(len(factorizedPositions[1])):
-    partialDataFrame = df.loc[df["Position"] == i]
-    color = sns.color_palette("hls", i+1)[i]
-    sns.distplot(partialDataFrame["Weight(pounds)"], label=f"{factorizedPositionsLabels[i]}", axlabel=False, kde=False,
-                 color=color, fit=norm, fit_kws={"color": color})
+partialDataFrame = df.loc[df["Position"] == 'Starting_Pitcher']
+color2 = sns.color_palette("hls", 2)[1]
+sns.distplot(partialDataFrame["Weight(pounds)"], label='Starting_Pitcher',  kde=False,
+                 color=color2, fit=norm, fit_kws={"color": color2})
+
 plt.legend()
-
-# plt.figure(figsize=(5, 2))
-# plt.scatter(df["Weight(pounds)"], df.Position)
-# plt.yticks(np.arange(len(factorizedPositions[1])), factorizedPositions[1])
-
 plt.show()

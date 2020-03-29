@@ -14,22 +14,21 @@ of["min"] = df.min(axis=0)
 of["max"] = df.max(axis=0)
 print(of)
 
-
-
 #qualitive
-print('\nMode for qualitive attribute: ')
+print('\nMediana cechy jakościowej: ')
 print(df.Sex.mode())
 
-#getting correlations
+#getting correlations with pearson method
 correl = df.corr()
 #eliminating correlating same labels e.g. Length with Length
 for i in correl.index:
     for j in correl.columns:
         if i==j:
             correl.loc[i,j] = 0
+#labels of maximum values in a dataframe
 corr_val1 = correl.idxmax().index[0]
 corr_val2 = correl.idxmax()[0]
-print(f"the most correlated values are: {corr_val1} and {corr_val2}")
+print(f"Najbardziej skorelowane wartości to {corr_val1} i {corr_val2}")
 
 
 sns.distplot(df[corr_val1], color="blue", label=f"{corr_val1}", axlabel=False)

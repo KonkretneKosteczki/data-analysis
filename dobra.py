@@ -6,19 +6,22 @@ from scipy import stats
 alpha = 0.05
 manaus_level_hypothesis=0
 
-print(f"testing following hypothesis: \n"
-      f"mean level of manaus river equal to: {manaus_level_hypothesis}\n"
-      f"statistical significance: {alpha}")
+print(f"Badanie następującej hipotezy: \n"
+      f"Średnia wysokość rzeki w manaus jest na wysokości punktu arbitralnego(wynosi {manaus_level_hypothesis}).\n"
+      f"poziom istotności statystycznej: {alpha}")
 df = pandas.read_table('data/4/manaus.csv', sep=',', index_col=0)
-res = stats.ttest_1samp(df.manaus, manaus_level_hypothesis)
-print(f"T-student test conducted on the data returned p-value: {res.pvalue}")
-if res.pvalue > alpha:
-    print("p-value is greater than the statistical significance, therefore the hypothesis is true")
+stat, p_val = stats.ttest_1samp(df.manaus, manaus_level_hypothesis)
+print(df.manaus)
+print(f"Wykonany test T-studenta dla danych testowych zwrócił p-wartość: {p_val}")
+if p_val > alpha:
+    print("P-wartość jest wyższa niż przyjęty poziom istotności statystycznej. Nie ma podstaw do odrzucenia hipotezy zerowej.")
 else:
-    print("p-value is smaller than the statistical significance, therefore the hypothesis is false")
+    print("P-wartość jest niższa niż przyjęty poziom istotności statystycznej. Hipotezę odrzucamy, ponieważ różnice są istotne statystycznie.")
 print('\n')
 
 sns.distplot(df.manaus, color="blue", label="Manaus level")
 plt.axvline(0, color='k', linestyle='dashed', linewidth=1)
 plt.legend()
 plt.show()
+
+
