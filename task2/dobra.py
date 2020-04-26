@@ -39,8 +39,8 @@ if __name__ == '__main__':
     compare_data(initial_data, filled_regression, x_column, y_column)
     # 4. Wyznaczyć krzywą regresji dla danych po każdej imputacji. Porównać jak zmieniły się parametry krzywych.
     print("INTERPOLATION")
-    regression_curve_after(filled_interpolation, model, r_sq, x_column, y_column)
+    regression_curve_after(filled_interpolation, model, r_sq, x_column, y_column, graph_text="Graph of linear regression after interpolation imputation")
     print("HOT-DECK")
-    regression_curve_after(filled_hot_deck, model, r_sq, x_column, y_column)
+    regression_curve_after(filled_hot_deck, model, r_sq, x_column, y_column, graph_text="Graph of linear regression after hot-deck imputation")
     print("REGRESSION")
-    regression_curve_after(filled_regression, model, r_sq, x_column, y_column)
+    regression_curve_after(filled_regression, model, r_sq, x_column, y_column, graph_text="Graph of linear regression after regression curve imputation")

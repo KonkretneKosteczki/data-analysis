@@ -10,7 +10,6 @@ def read_data():
     data = raw_data.drop(["Serial No."], axis=1)
     return data
 
-
 def percent(data_frame):
     count = data_frame.count()  # count of data in each column
     print("Ilosc danych w kolumnach:")
@@ -71,12 +70,12 @@ def compare_data(data_before, data_after, x_column, y_column):
 
     print("Srednia przed: ", mean)
     print("Srednia po: ", mean_after)
-    print("Roznica: ", abs(mean_after - mean))
+    print("Roznica: ", mean_after - mean)
     print()
 
     print("Odchylenie standardowe przed: ", st_dev)
     print("Odchylenie standardowe po: ", st_dev_after)
-    print("Roznica: ", abs(st_dev_after - st_dev))
+    print("Roznica: ", st_dev_after - st_dev)
     print()
 
     print("Kwartyle przed: ")
@@ -84,23 +83,23 @@ def compare_data(data_before, data_after, x_column, y_column):
     print("Kwartyle po: ")
     print(quantile_after)
     print("Roznica: ")
-    print(abs(quantile_after - quantile))
+    print(quantile_after - quantile)
 
 
-def regression_curve_after(data, model, r_sq, x_column, y_column):
+def regression_curve_after(data, model, r_sq, x_column, y_column, graph_text="Graph of linear regression after"):
     x_data = data[[x_column]]
     y_data = data[y_column]
     model_2 = LinearRegression().fit(x_data, y_data)
     r_sq_2 = model.score(x_data, y_data)
-    print("R^2 po imputancji:", r_sq_2)
-    print("intercept po imputancji:", model_2.intercept_)
-    print("slope po imputancji:", model_2.coef_)
+    print("R^2 po imputacji:", r_sq_2)
+    print("intercept po imputacji:", model_2.intercept_)
+    print("slope po imputacji:", model_2.coef_)
     print()
-    print("Różnica R^2:", abs(r_sq - r_sq_2))
-    print("Różnica intercept:", abs(model.intercept_ - model_2.intercept_))
-    print("Różnica slope:", abs(model.coef_ - model_2.coef_))
+    print("Różnica R^2:", (r_sq_2 - r_sq))
+    print("Różnica intercept:", model_2.intercept_ - model.intercept_)
+    print("Różnica slope:", model_2.coef_ - model.coef_)
     print()
-    create_graph(model_2.coef_, model_2.intercept_, x_data, y_data, "Graph of linear regression after", x_column,
+    create_graph(model_2.coef_, model_2.intercept_, x_data, y_data, graph_text, x_column,
                  y_column)
 
 if __name__ == '__main__':
