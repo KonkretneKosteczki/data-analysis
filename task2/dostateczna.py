@@ -42,7 +42,7 @@ def create_graph(coefficient, intercept, x_data, y_data, graph_label, x_label=No
     plt.show()
 
 
-def regression_curve_before(data, x_column, y_column):
+def regression_curve_before(data, x_column, y_column, graph_name="Graph of linear regression before"):
     data_without_nans = data.dropna()  # removes rows with missing data
 
     x_data = data_without_nans[[x_column]]
@@ -55,7 +55,7 @@ def regression_curve_before(data, x_column, y_column):
     print("intercept:", model.intercept_)
     print("slope:", model.coef_)
     print()
-    create_graph(model.coef_, model.intercept_, x_data, y_data, "Graph of linear regression before", x_column, y_column)
+    create_graph(model.coef_, model.intercept_, x_data, y_data, graph_name, x_column, y_column)
     return model, r_sq
 
 
