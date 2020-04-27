@@ -13,8 +13,6 @@ def interpolation_imputation(data):
 
 def hot_deck_imputation(data):
     res= data.sort_values("GRE_Score").fillna(method="ffill") #LOCF
-    for a in res[y_column]:
-        print(a)
     return res
 
 def regression_curve_imputation(adata, model):
