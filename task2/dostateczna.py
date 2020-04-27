@@ -21,11 +21,16 @@ def percent(data_frame):
 
     per = (missing_fields / total_rows) * 100
     print("Procent danych z brakami: ", per)
+    print()
     return per
 
 
-def create_graph(coefficient, intercept, x_data, y_data, graph_label, x_label="x", y_label="y"):
-    x = np.linspace(90, 130, 100)
+def create_graph(coefficient, intercept, x_data, y_data, graph_label, x_label=None, y_label=None):
+    if x_label is None or y_label is None:
+        raise ValueError("x_label and y_label cannot be None")
+    min_x = min(x_data[x_label])
+    max_x = max(x_data[x_label])
+    x = np.linspace(min_x, max_x, 100)
     y = coefficient * x + intercept
     plt.plot(x, y, "-r")
     plt.plot(x_data, y_data, "ro")
@@ -42,13 +47,14 @@ def regression_curve_before(data, x_column, y_column):
 
     x_data = data_without_nans[[x_column]]
     y_data = data_without_nans[y_column]
-
+    # print(data_without_nans.corr()[y_column])
     model = LinearRegression().fit(x_data, y_data) # takes: X{array-like, sparse matrix} of shape (n_samples, n_features);yarray-like of shape (n_samples,) or (n_samples, n_targets)
     r_sq = model.score(x_data, y_data)
+    print("Parametry krzywej regresji dla danych bez braków:")
     print("R^2:", r_sq)
     print("intercept:", model.intercept_)
     print("slope:", model.coef_)
-
+    print()
     create_graph(model.coef_, model.intercept_, x_data, y_data, "Graph of linear regression before", x_column, y_column)
     return model, r_sq
 
@@ -61,13 +67,15 @@ def mean_imputation(data):
     return filled
 
 
-def compare_data(data_before, data_after, x_column, y_column):
+def compare_data(data_before, data_after, x_column, y_column, description=None):
     def calc_mean_dev_quantile(data):
-        return [data[x_column].mean(), statistics.stdev(data[x_column]), data[y_column].quantile([0.25, 0.5, 0.75])]
+        return [data[y_column].mean(), statistics.stdev(data[y_column]), data[y_column].quantile([0.25, 0.5, 0.75])]
 
     mean, st_dev, quantile = calc_mean_dev_quantile(data_before.dropna())
     mean_after, st_dev_after, quantile_after = calc_mean_dev_quantile(data_after)
 
+    if description is not None:
+        print(description)
     print("Srednia przed: ", mean)
     print("Srednia po: ", mean_after)
     print("Roznica: ", mean_after - mean)
@@ -84,7 +92,7 @@ def compare_data(data_before, data_after, x_column, y_column):
     print(quantile_after)
     print("Roznica: ")
     print(quantile_after - quantile)
-
+    print()
 
 def regression_curve_after(data, model, r_sq, x_column, y_column, graph_text="Graph of linear regression after"):
     x_data = data[[x_column]]
@@ -104,8 +112,8 @@ def regression_curve_after(data, model, r_sq, x_column, y_column, graph_text="Gr
 
 if __name__ == '__main__':
     # Wybrać zbiór danych do analizy, korzystając z dowolnego repozytorium danych (UCI Repository, Kaggle, inne). W zbiorze powinny występować brakujące dane, jednak nie powinno być ich zbyt wiele (około 5%-10%). Proszę również zwrócić uwagę, że dalsza część poleceń uwzględnia regresję liniową, która jest stosowana dla skal ilościowych (i zasadniczo zakłada zgodność z rozkładem normalnym). Proszę zatem zadbać, żeby parametry, które podlegają regresji liniowej miały charakterystykę pozwalającą na zaobserwowanie różnic (czyli chociażby charakteryzowały się zauważalną wariancją).
-    x_column = "TOEFL_Score"
-    y_column = "CGPA"
+    y_column = "TOEFL_Score"
+    x_column = "GRE_Score"
 
     # Wczytać dane z brakami, policzyć jaki procent danych zawiera braki.
     data = read_data()
@@ -115,6 +123,6 @@ if __name__ == '__main__':
     # Uzupełnić braki metodą "mean imputation"
     filled = mean_imputation(data)
     # Porównać charakterystykę zbiorów przed i po imputacji (średnia, odchylenie standardowe, kwartyle).
-    compare_data(data, filled, x_column, y_column)
+    compare_data(data, filled, x_column, y_column, description="Porównanie charakterystyki zbiorów z brakami i po imputacji 'mean imputation'")
     # Wyznaczyć krzywą regresji dla danych po imputacji. Porównać jak zmieniły się parametry krzywej
     regression_curve_after(filled, model, r_sq, x_column, y_column)
