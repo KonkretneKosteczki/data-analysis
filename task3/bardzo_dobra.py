@@ -13,7 +13,6 @@ def subject_accuracy(matrix):
     wrong = 0
     for i in range(label_count):
         maxima = np.argmax(matrix[i])
-        print(matrix[i][maxima])
         correct += matrix[i][maxima]
         wrong += sum(np.delete(matrix[i], maxima))
     print("Subject Accuracy {0}".format(correct/(correct+wrong)))
@@ -32,7 +31,7 @@ def rearrange_rows(matrix, pred_labels):
     return new_matrix, new_labels
 
 
-def calculate_accuracy(pred_labels, true_labels):
+def calculate_accuracy(pred_labels, true_labels, title):
     unique_true_labels = np.unique(true_labels)
     unique_pred_labels = np.unique(pred_labels)
     matrix = np.zeros((unique_true_labels.size, unique_pred_labels.size))
@@ -46,7 +45,7 @@ def calculate_accuracy(pred_labels, true_labels):
 
     plt.figure()
     plt.imshow(matrix, interpolation='nearest', cmap=plt.cm.Blues)
-    plt.title("Confusion Matrix")
+    plt.title(title + " Confusion Matrix")
     plt.colorbar()
     tick_marks = np.arange(len(unique_true_labels))
     plt.xticks(tick_marks, unique_true_labels)
@@ -61,6 +60,19 @@ def calculate_accuracy(pred_labels, true_labels):
     plt.ylabel('Predicted labels')
 
 
+def analyse_clusters(X, Y, title):
+    y_pred = KMeans(n_clusters=np.unique(Y).size, random_state=100).fit_predict(X)
+    plt.scatter(X[:, 0], X[:, 1], c=y_pred)
+    plt.title(title)
+    calculate_accuracy(y_pred, Y.values, title)
+
+
+# 2. Dokonać analizy skupień przy pomocy wybranego algorytmu
+# (np. k-means, meanshift, spectral clustering, etc.) używając cech wyznaczonych przez PCA
+# w części zadania na ocenę dostateczną oraz cech wyznaczonych w wymaganiach na ocenę dobrą.
+
+
+## dostateczna
 dataset_path = 'data/iris.data'
 dataset_headers = ["sepal_length", "sepal_width", "petal_length", "petal_width", "class"]
 df = pd.read_csv(dataset_path,
@@ -68,15 +80,8 @@ df = pd.read_csv(dataset_path,
                  names=dataset_headers)
 X = df.iloc[:, :4]
 Y = df.iloc[:, 4]
-
 pca = PCA(n_components=2)
 X = pca.fit_transform(X)
 
-y_pred = KMeans(n_clusters=np.unique(Y).size, random_state=100).fit_predict(X)
-
-plt.scatter(X[:, 0], X[:, 1], c=y_pred)
-plt.title("PCA KMeans")
-
-calculate_accuracy(y_pred, Y.values)
-
-# plt.show()
+analyse_clusters(X, Y, "PCA KMeans")
+plt.show()
