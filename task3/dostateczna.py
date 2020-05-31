@@ -37,6 +37,13 @@ def read_data():
 
 sgd_kwargs={'learning_rate': 'constant', 'eta0': 0.001 }
 
+
+def select_PCA_features(X):
+    pca = PCA(n_components=2)
+    X_new = pca.fit_transform(X)
+    return X_new
+
+
 if __name__ == '__main__':
     df = read_data()
     X = df.iloc[:, :4]
@@ -54,8 +61,7 @@ if __name__ == '__main__':
     plt.show()
 
     # 3. Dokonać analizy głównych składowych (PCA) i zredukować liczbę cech do 2 składowych.
-    pca = PCA(n_components=2)
-    X_new = pca.fit_transform(X)
+    X_new = select_PCA_features(X)
 
     # 4. Ponownie przeprowadzić klasyfikację i porównać wyniki.
     X_train2, X_test2, y_train2, y_test2 = model_selection.train_test_split(X_new, y)
