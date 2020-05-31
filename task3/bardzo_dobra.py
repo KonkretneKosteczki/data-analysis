@@ -1,12 +1,13 @@
 from matplotlib import pyplot as plt
 import numpy as np
 from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
-import pandas as pd
 import itertools
 
+from task3.dobra import select_lowest_and_highest_variance_features, select_features_chi2
+from task3.dostateczna import read_data, select_PCA_features
 
-def subject_accuracy(matrix):
+
+def subject_accuracy(matrix, title):
     # assume the maximum value in a particular row to be correct
     label_count = len(matrix)
     correct = 0
@@ -15,7 +16,7 @@ def subject_accuracy(matrix):
         maxima = np.argmax(matrix[i])
         correct += matrix[i][maxima]
         wrong += sum(np.delete(matrix[i], maxima))
-    print("Subject Accuracy {0}".format(correct/(correct+wrong)))
+    print(title + " Subject Accuracy {0}".format(correct/(correct+wrong)))
 
 
 def rearrange_rows(matrix, pred_labels):
@@ -40,7 +41,7 @@ def calculate_accuracy(pred_labels, true_labels, title):
     for i in range(len(pred_labels)):
         matrix[pred_labels[i]][labels_dicts.get(true_labels[i])] += 1
 
-    subject_accuracy(matrix)
+    subject_accuracy(matrix, title)
     matrix, unique_pred_labels = rearrange_rows(matrix, unique_pred_labels)
 
     plt.figure()
@@ -61,9 +62,12 @@ def calculate_accuracy(pred_labels, true_labels, title):
 
 
 def analyse_clusters(X, Y, title):
+    plt.figure()
     y_pred = KMeans(n_clusters=np.unique(Y).size, random_state=100).fit_predict(X)
     plt.scatter(X[:, 0], X[:, 1], c=y_pred)
     plt.title(title)
+    # 3. Sprawdzić jakość utworzonych skupień za pomocą wybranego przez siebie kryterium.
+    # Przeanalizować wyniki, wykreślić wykresy, jeśli są wskazane.
     calculate_accuracy(y_pred, Y.values, title)
 
 
@@ -72,16 +76,19 @@ def analyse_clusters(X, Y, title):
 # w części zadania na ocenę dostateczną oraz cech wyznaczonych w wymaganiach na ocenę dobrą.
 
 
-## dostateczna
-dataset_path = 'data/iris.data'
-dataset_headers = ["sepal_length", "sepal_width", "petal_length", "petal_width", "class"]
-df = pd.read_csv(dataset_path,
-                 header=None,
-                 names=dataset_headers)
+df = read_data()
 X = df.iloc[:, :4]
 Y = df.iloc[:, 4]
-pca = PCA(n_components=2)
-X = pca.fit_transform(X)
 
-analyse_clusters(X, Y, "PCA KMeans")
+## dostateczna
+X_pca = select_PCA_features(X)
+analyse_clusters(X_pca, Y, "PCA KMeans")
+
+## dobra
+X_low_var, X_high_var = select_lowest_and_highest_variance_features(X)
+X_chi2 = select_features_chi2(X, Y)
+analyse_clusters(X_low_var.values, Y, "Low Var KMeans")
+analyse_clusters(X_high_var.values, Y, "High Var KMeans")
+analyse_clusters(X_chi2.values, Y, "Chi2 KMeans")
+
 plt.show()

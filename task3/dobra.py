@@ -20,7 +20,7 @@ def select_features_chi2(X, y):
     chi2selector = SelectKBest(score_func=chi2, k=2)
     chi2selector.fit_transform(X, y)
     selected_col_numbers = chi2selector.get_support(indices=True)
-    X_chi2 = df.iloc[:, selected_col_numbers]
+    X_chi2 = X.iloc[:, selected_col_numbers]
     return X_chi2
 
 if __name__ == '__main__':
