@@ -35,6 +35,8 @@ def read_data():
                      names=dataset_headers)
     return df
 
+sgd_kwargs={'learning_rate': 'constant', 'eta0': 0.001 }
+
 if __name__ == '__main__':
     df = read_data()
     X = df.iloc[:, :4]
@@ -42,7 +44,7 @@ if __name__ == '__main__':
     X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y)
 
     # 1. Przeprowadzić klasyfikację za pomocą wybranej techniki klasyfikacji (np. MLP, SVM, SGD, etc.)
-    sgd = SGDClassifier()
+    sgd = SGDClassifier(**sgd_kwargs)
     print("Training SGDClassifier")
     training_data = train(sgd, X_train, y_train, X_test, y_test, 1000)
 
@@ -57,7 +59,7 @@ if __name__ == '__main__':
 
     # 4. Ponownie przeprowadzić klasyfikację i porównać wyniki.
     X_train2, X_test2, y_train2, y_test2 = model_selection.train_test_split(X_new, y)
-    sgd2 = SGDClassifier()
+    sgd2 = SGDClassifier(**sgd_kwargs)
     print("\nTraining SGDClassifier after PCA")
     training_data2 = train(sgd2, X_train2, y_train2, X_test2, y_test2, 1000)
     plt.plot(*training_data2)
