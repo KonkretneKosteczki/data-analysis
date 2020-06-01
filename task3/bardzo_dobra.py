@@ -86,9 +86,10 @@ analyse_clusters(X_pca, Y, "PCA KMeans")
 
 ## dobra
 X_low_var, X_high_var = select_lowest_and_highest_variance_features(X)
-X_chi2 = select_features_chi2(X, Y)
+X_chi2_h, X_chi2_l = select_features_chi2(X, Y)
 analyse_clusters(X_low_var.values, Y, "Low Var KMeans")
 analyse_clusters(X_high_var.values, Y, "High Var KMeans")
-analyse_clusters(X_chi2.values, Y, "Chi2 KMeans")
+analyse_clusters(X_chi2_h.values, Y, "Chi2 high correalation KMeans")
+analyse_clusters(X_chi2_l.values, Y, "Chi2 loose correalation KMeans")
 
 plt.show()

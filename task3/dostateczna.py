@@ -6,6 +6,8 @@ from sklearn.metrics import accuracy_score
 from matplotlib import pyplot as plt
 import numpy as np
 
+sgd_kwargs={'learning_rate': 'constant', 'eta0': 0.001 }
+
 
 def train(model: SGDClassifier, train_data, train_labels, test_data, test_labels, total_epochs=1000):
     # using partial fit instead of fit in order to gather information on accuracy after every pass
@@ -29,14 +31,8 @@ def train(model: SGDClassifier, train_data, train_labels, test_data, test_labels
 def read_data():
     dataset_path = 'data/iris.data'
     dataset_headers = ["sepal_length", "sepal_width", "petal_length", "petal_width", "class"]
-
-    df = pd.read_csv(dataset_path,
-                     header=None,
-                     names=dataset_headers)
+    df = pd.read_csv(dataset_path, header=None, names=dataset_headers)
     return df
-
-sgd_kwargs={'learning_rate': 'constant', 'eta0': 0.001 }
-
 
 def select_PCA_features(X):
     pca = PCA(n_components=2)
@@ -49,7 +45,6 @@ if __name__ == '__main__':
     X = df.iloc[:, :4]
     y = df.iloc[:, 4]
     X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y)
-
     # 1. Przeprowadzić klasyfikację za pomocą wybranej techniki klasyfikacji (np. MLP, SVM, SGD, etc.)
     sgd = SGDClassifier(**sgd_kwargs)
     print("Training SGDClassifier")
@@ -57,6 +52,9 @@ if __name__ == '__main__':
 
     # 2. Wykonać wykres z przedstawioną skutecznością klasyfikatora
     # (procent poprawnie sklasyfikowanych próbek) od liczby iteracji/epok.
+    plt.title("Classifier accuracy")
+    plt.xlabel("Epoch number")
+    plt.ylabel("% of correctly classified samples")
     plt.plot(*training_data)
     plt.show()
 
@@ -68,5 +66,8 @@ if __name__ == '__main__':
     sgd2 = SGDClassifier(**sgd_kwargs)
     print("\nTraining SGDClassifier after PCA")
     training_data2 = train(sgd2, X_train2, y_train2, X_test2, y_test2, 1000)
+    plt.title("Classifier accuracy for features extracted with PCA")
+    plt.xlabel("Epoch number")
+    plt.ylabel("% of correctly classified samples")
     plt.plot(*training_data2)
     plt.show()
